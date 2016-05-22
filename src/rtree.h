@@ -32,7 +32,6 @@
 // Fwd decl
 class RTFileStream;  // File I/O helper class, look below for implementation and notes.
 
-
 /// \class RTree
 /// Implementation of RTree, a multidimensional bounding rectangle tree.
 /// Example usage: For a 3-dimensional tree use RTree<Object*, float, 3> myTree;
@@ -65,7 +64,7 @@ public:
         MINNODES = TMINNODES,                         ///< Min elements in node
     };
 
-    typedef bool (*t_resultCallback)(DATATYPE, void *);
+    typedef bool (*t_resultCallback)(void*, void *);
 
 public:
 
