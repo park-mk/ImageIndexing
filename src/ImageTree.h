@@ -16,6 +16,7 @@
 
 #include "rtree.h"
 #include "image.h"
+#include "common.h"
 
 using std::string;
 using std::vector;
@@ -34,15 +35,18 @@ bool searchCallback(void* img, void*) {
 template <typename ELEM_T, int DIMENSION = 9>
 class ImageTree {
 private:
-    RTree<Image<ELEM_T, DIMENSION>*, ELEM_T, DIMENSION, double> rtree;
+    RTree<Image<ELEM_T, DIMENSION>*, ELEM_T, DIMENSION, double, NODE_MAX> rtree;
     vector<string> namelist;
 
 public:
+    int queryTimes = 0;
+
     ImageTree() {
         std::ifstream file("data/images.txt");
         string name;
 
-        while (std::getline(file, name)) {
+        for (int i = 0; i < TEST_SIZE; ++i) {
+            std::getline(file, name);
             this->namelist.push_back(name);
         }
 
@@ -63,16 +67,16 @@ public:
         auto tree = ImageTree<ELEM_T, DIMENSION>();
         std::ifstream file(filename);
 
-        string line;
-        int k = 0;
-        while (std::getline(file, line)) {
+        for (int i = 0; i < TEST_SIZE; ++i) {
+            string line;
+            std::getline(file, line);
             array<ELEM_T, DIMENSION> data;
             std::stringstream sline(line);
             for (int i = 0; i < DIMENSION; ++i) {
                 sline >> data[i];
             }
 
-            tree.rtree.Insert(data.data(), data.data(), new Image<ELEM_T, DIMENSION>(tree.namelist[k++], data));
+            tree.rtree.Insert(data.data(), data.data(), new Image<ELEM_T, DIMENSION>(tree.namelist[i], data));
         }
 
         file.close();
@@ -92,6 +96,7 @@ public:
         if (result < RESULT_NUM) {
             search(image, times + 1);
         } else {
+            queryTimes = times;
             for (int i = 0; i < results.size(); ++i) {
                 ((Image<ELEM_T, DIMENSION>*)(results[i]))->dist = distance(image, ((Image<ELEM_T, DIMENSION>*)(results[i]))->data);
             }

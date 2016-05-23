@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include "ImageTree.h"
+#include "common.h"
 
 const int RGB_HIST_10_DIMENSION = 10;
 const int HSV_HIST_10_DIMENSION = 10;
@@ -12,9 +13,10 @@ const int COLOR_MOMENT_DIMENSION = 9;
 int main() {
     std::ios::sync_with_stdio(false);
     std::ifstream nameFile("data/images.txt");
-    std::vector<std::string> names(5613);
-    int k = 0;
-    while (std::getline(nameFile, names[k++]));
+    std::vector<std::string> names(TEST_SIZE);
+    for (int i = 0; i < TEST_SIZE; ++i) {
+        std::getline(nameFile, names[i]);
+    }
     nameFile.close();
 
     auto rgbHist10Tree = ImageTree<double, RGB_HIST_10_DIMENSION>::fromFile("data/RGB_Hist_10.txt");
@@ -47,17 +49,27 @@ int main() {
     long hsvHist20SumST = 0;
     long colorMomentSum = 0;
 
-    std::vector<std::string> rgbHist10Lines(5613);
-    std::vector<std::string> hsvHist10Lines(5613);
-    std::vector<std::string> rgbHist20Lines(5613);
-    std::vector<std::string> hsvHist20Lines(5613);
-    std::vector<std::string> rgbHist10LinesST(5613);
-    std::vector<std::string> hsvHist10LinesST(5613);
-    std::vector<std::string> rgbHist20LinesST(5613);
-    std::vector<std::string> hsvHist20LinesST(5613);
-    std::vector<std::string> colorMomentLines(5613);
+    int rgbHist10Times = 0;
+    int hsvHist10Times = 0;
+    int rgbHist20Times = 0;
+    int hsvHist20Times = 0;
+    int rgbHist10TimesST = 0;
+    int hsvHist10TimesST = 0;
+    int rgbHist20TimesST = 0;
+    int hsvHist20TimesST = 0;
+    int colorMomentTimes = 0;
 
-    for (int i = 0; i < 5613; ++i) {
+    std::vector<std::string> rgbHist10Lines(TEST_SIZE);
+    std::vector<std::string> hsvHist10Lines(TEST_SIZE);
+    std::vector<std::string> rgbHist20Lines(TEST_SIZE);
+    std::vector<std::string> hsvHist20Lines(TEST_SIZE);
+    std::vector<std::string> rgbHist10LinesST(TEST_SIZE);
+    std::vector<std::string> hsvHist10LinesST(TEST_SIZE);
+    std::vector<std::string> rgbHist20LinesST(TEST_SIZE);
+    std::vector<std::string> hsvHist20LinesST(TEST_SIZE);
+    std::vector<std::string> colorMomentLines(TEST_SIZE);
+
+    for (int i = 0; i < TEST_SIZE; ++i) {
         std::getline(rgbHist10File, rgbHist10Lines[i]);
         std::getline(hsvHist10File, hsvHist10Lines[i]);
         std::getline(rgbHist20File, rgbHist20Lines[i]);
@@ -110,6 +122,7 @@ int main() {
         for (int j = 0; j < RGB_HIST_10_DIMENSION; ++j) {
             hsvHist10SlineST >> hsvHist10DataST[j];
         }
+
         for (int j = 0; j < RGB_HIST_20_DIMENSION; ++j) {
             rgbHist20SlineST >> rgbHist20DataST[j];
         }
@@ -133,51 +146,60 @@ int main() {
         Image<double, COLOR_MOMENT_DIMENSION> colorMomentImg(names[i], colorMomentData);
 
         rgbHist10Tree.search(rgbHist10Data);
+        rgbHist10Times += rgbHist10Tree.queryTimes;
         std::vector<Image<double, RGB_HIST_10_DIMENSION>> rgbHist10Results = rgbHist10Tree.getResults();
         rgbHist10Sum += std::count(rgbHist10Results.begin(), rgbHist10Results.end(), rgbHist10Img);
 
         hsvHist10Tree.search(hsvHist10Data);
+        hsvHist10Times += hsvHist10Tree.queryTimes;
         std::vector<Image<double, HSV_HIST_10_DIMENSION>> hsvHist10Results = hsvHist10Tree.getResults();
         hsvHist10Sum += std::count(hsvHist10Results.begin(), hsvHist10Results.end(), hsvHist10Img);
 
         rgbHist20Tree.search(rgbHist20Data);
+        rgbHist20Times += rgbHist20Tree.queryTimes;
         std::vector<Image<double, RGB_HIST_20_DIMENSION>> rgbHist20Results = rgbHist20Tree.getResults();
         rgbHist20Sum += std::count(rgbHist20Results.begin(), rgbHist20Results.end(), rgbHist20Img);
 
         hsvHist20Tree.search(hsvHist20Data);
+        hsvHist20Times += hsvHist20Tree.queryTimes;
         std::vector<Image<double, HSV_HIST_20_DIMENSION>> hsvHist20Results = hsvHist20Tree.getResults();
         hsvHist20Sum += std::count(hsvHist20Results.begin(), hsvHist20Results.end(), hsvHist20Img);
 
         rgbHist10TreeST.search(rgbHist10DataST);
+        rgbHist10TimesST += rgbHist10TreeST.queryTimes;
         std::vector<Image<double, RGB_HIST_10_DIMENSION>> rgbHist10ResultsST = rgbHist10TreeST.getResults();
         rgbHist10SumST += std::count(rgbHist10ResultsST.begin(), rgbHist10ResultsST.end(), rgbHist10ImgST);
 
         hsvHist10TreeST.search(hsvHist10DataST);
+        hsvHist10TimesST += hsvHist10TreeST.queryTimes;
         std::vector<Image<double, HSV_HIST_10_DIMENSION>> hsvHist10ResultsST = hsvHist10TreeST.getResults();
         hsvHist10SumST += std::count(hsvHist10ResultsST.begin(), hsvHist10ResultsST.end(), hsvHist10ImgST);
 
         rgbHist20TreeST.search(rgbHist20DataST);
+        rgbHist20TimesST += rgbHist20TreeST.queryTimes;
         std::vector<Image<double, RGB_HIST_20_DIMENSION>> rgbHist20ResultsST = rgbHist20TreeST.getResults();
         rgbHist20SumST += std::count(rgbHist20ResultsST.begin(), rgbHist20ResultsST.end(), rgbHist20ImgST);
 
         hsvHist20TreeST.search(hsvHist20DataST);
+        hsvHist20TimesST += hsvHist20TreeST.queryTimes;
         std::vector<Image<double, HSV_HIST_20_DIMENSION>> hsvHist20ResultsST = hsvHist20TreeST.getResults();
         hsvHist20SumST += std::count(hsvHist20ResultsST.begin(), hsvHist20ResultsST.end(), hsvHist20ImgST);
 
         colorMomentTree.search(colorMomentData);
+        colorMomentTimes += colorMomentTree.queryTimes;
         std::vector<Image<double, COLOR_MOMENT_DIMENSION>> colorMomentResults = colorMomentTree.getResults();
         colorMomentSum += std::count(colorMomentResults.begin(), colorMomentResults.end(), colorMomentImg);
     }
 
-    std::cout << "RGB Hist 10d: " << (double)rgbHist10Sum / 56130 << std::endl;
-    std::cout << "HSV Hist 10d: " << (double)hsvHist10Sum / 56130 << std::endl;
-    std::cout << "RGB Hist 20d: " << (double)rgbHist20Sum / 56130 << std::endl;
-    std::cout << "HSV Hist 20d: " << (double)hsvHist20Sum / 56130 << std::endl;
-    std::cout << "RGB ST Hist 10d: " << (double)rgbHist10SumST / 56130 << std::endl;
-    std::cout << "HSV ST Hist 10d: " << (double)hsvHist10SumST / 56130 << std::endl;
-    std::cout << "RGB ST Hist 20d: " << (double)rgbHist20SumST / 56130 << std::endl;
-    std::cout << "HSV ST Hist 20d: " << (double)hsvHist20SumST / 56130 << std::endl;
-    std::cout << "Color Moment 9d: " << (double)colorMomentSum / 56130 << std::endl;
+    std::cout << "RGB Hist 10d: " << (double)rgbHist10Sum / TEST_SIZE * 10 << " in " << rgbHist10Times << " times." << std::endl;
+    std::cout << "HSV Hist 10d: " << (double)hsvHist10Sum / TEST_SIZE * 10 << " in " << hsvHist10Times << " times." << std::endl;
+    std::cout << "RGB Hist 20d: " << (double)rgbHist20Sum / TEST_SIZE * 10 << " in " << rgbHist20Times << " times." << std::endl;
+    std::cout << "HSV Hist 20d: " << (double)hsvHist20Sum / TEST_SIZE * 10 << " in " << hsvHist20Times << " times." << std::endl;
+    std::cout << "RGB ST Hist 10d: " << (double)rgbHist10SumST / TEST_SIZE * 10 << " in " << rgbHist10TimesST << " times." << std::endl;
+    std::cout << "HSV ST Hist 10d: " << (double)hsvHist10SumST / TEST_SIZE * 10 << " in " << hsvHist10TimesST << " times." << std::endl;
+    std::cout << "RGB ST Hist 20d: " << (double)rgbHist20SumST / TEST_SIZE * 10 << " in " << rgbHist20TimesST << " times." << std::endl;
+    std::cout << "HSV ST Hist 20d: " << (double)hsvHist20SumST / TEST_SIZE * 10 << " in " << hsvHist20TimesST << " times." << std::endl;
+    std::cout << "Color Moment 9d: " << (double)colorMomentSum / TEST_SIZE * 10 << " in " << colorMomentTimes << " times." << std::endl;
 
     rgbHist10File.close();
     hsvHist10File.close();
