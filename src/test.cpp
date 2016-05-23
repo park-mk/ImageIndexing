@@ -81,10 +81,10 @@ int main() {
         hsvHist20Sum += std::count(hsvHist20Results.begin(), hsvHist20Results.end(), hsvHist20Img);
     }
 
-    std::cout << (double)rgbHist10Sum / 56130 << std::endl;
-    std::cout << (double)hsvHist10Sum / 56130 << std::endl;
-    std::cout << (double)rgbHist20Sum / 56130 << std::endl;
-    std::cout << (double)hsvHist20Sum / 56130 << std::endl;
+    std::cout << "RGB Hist 10d: " << (double)rgbHist10Sum / 56130 << std::endl;
+    std::cout << "HSV Hist 10d: " << (double)hsvHist10Sum / 56130 << std::endl;
+    std::cout << "RGB Hist 20d: " << (double)rgbHist20Sum / 56130 << std::endl;
+    std::cout << "HSV Hist 20d: " << (double)hsvHist20Sum / 56130 << std::endl;
 
     rgbHist10File.close();
     hsvHist10File.close();
