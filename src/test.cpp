@@ -119,7 +119,7 @@ int main() {
         }
 
         for (int j = 0; j < COLOR_MOMENT_DIMENSION; ++j) {
-            colorMomentSline >> colorMomentData[i];
+            colorMomentSline >> colorMomentData[j];
         }
 
         Image<double, RGB_HIST_10_DIMENSION> rgbHist10Img(names[i], rgbHist10Data);
