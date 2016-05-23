@@ -12,4 +12,4 @@ for i = 3:N
     M = [M; y'];
 end
 
-save('RGB_Hist_Gray.txt', 'M', '-ASCII');
+save('Gray_Hist.txt', 'M', '-ASCII');

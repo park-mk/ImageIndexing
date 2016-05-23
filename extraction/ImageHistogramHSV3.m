@@ -7,21 +7,21 @@ for i = 3:N
     
     [m, n, ~] = size(image);
     
-    H = zeros(6, 1);
-    S = zeros(2, 1);
-    V = zeros(2, 1);
+    H = zeros(12, 1);
+    S = zeros(4, 1);
+    V = zeros(4, 1);
     %Histogram for Hue
     h = image(:, :, 1, :);
-    idxH = max(1, ceil(h * 6));
-    H = H + histc(idxH(:), 1:6);
+    idxH = max(1, ceil(h * 12));
+    H = H + histc(idxH(:), 1:12);
     %Histogram for Saturation
     s = image(:, :, 2, :);
-    idxS = max(1, ceil(s * 2));
-    S = S + histc(idxS(:), 1:2);
+    idxS = max(1, ceil(s * 4));
+    S = S + histc(idxS(:), 1:4);
     %Histogram for Value
     v = image(:, :, 3, :);
-    idxV = max(1, ceil(v * 2));
-    V = V + histc(idxV(:), 1:2);
+    idxV = max(1, ceil(v * 4));
+    V = V + histc(idxV(:), 1:4);
     %Normalise the histograms
     totalPixels = m * n;
     H = H / totalPixels;
@@ -35,4 +35,4 @@ for i = 3:N
     M = [M; y];
 end
 
-save('HSV_Hist_10.txt', 'M', '-ASCII');
+save('HSV_Hist_20.txt', 'M', '-ASCII');

@@ -18,4 +18,4 @@ for i = 3:N
     M = [M; y];
 end
 
-save('RGB_Hist.txt', 'M', '-ASCII');
+save('HSV_Hist.txt', 'M', '-ASCII');
