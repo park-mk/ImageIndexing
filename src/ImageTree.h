@@ -15,12 +15,13 @@
 #include <functional>
 
 #include "rtree.h"
+#include "image.h"
 
 using std::string;
 using std::vector;
 using std::array;
 
-const int RANGE = 10;
+const double RANGE = 0.001;
 const int RESULT_NUM = 10;
 
 std::vector<void*> results;
@@ -30,15 +31,6 @@ bool searchCallback(void* img, void*) {
     return true;
 }
 
-template <typename ELEM_T, int DIMENSION = 10>
-struct Image {
-    string name;
-    array<ELEM_T, DIMENSION> data;
-    double dist;
-
-    Image(string name, array<ELEM_T, DIMENSION> data) : name(name), data(data), dist(0) { }
-};
-
 template <typename ELEM_T, int DIMENSION = 9>
 class ImageTree {
 private:
@@ -47,7 +39,7 @@ private:
 
 public:
     ImageTree() {
-        std::ifstream file("data/namelist.txt");
+        std::ifstream file("data/images.txt");
         string name;
 
         while (std::getline(file, name)) {
@@ -100,7 +92,6 @@ public:
         if (result < RESULT_NUM) {
             search(image, times + 1);
         } else {
-            std::cout << times << std::endl;
             for (int i = 0; i < results.size(); ++i) {
                 ((Image<ELEM_T, DIMENSION>*)(results[i]))->dist = distance(image, ((Image<ELEM_T, DIMENSION>*)(results[i]))->data);
             }
@@ -109,12 +100,16 @@ public:
                 return ((Image<ELEM_T, DIMENSION>*)(image1))->dist < ((Image<ELEM_T, DIMENSION>*)(image2))->dist;
             });
 
-            results.erase(results.begin() + 10, results.end());
-
-            for (int i = 0; i < results.size(); ++i) {
-                std::cout << ((Image<ELEM_T, DIMENSION>*)(results[i]))->name << std::endl;
-            }
+            results.erase(results.begin() + RESULT_NUM, results.end());
         }
+    }
+
+    std::vector<Image<ELEM_T, DIMENSION>> getResults() {
+        std::vector<Image<ELEM_T, DIMENSION>> imageResults;
+        for_each(results.begin(), results.end(), [&](void* ptr) {
+            imageResults.push_back(*((Image<ELEM_T, DIMENSION>*)ptr));
+        });
+        return imageResults;
     }
 };
 
